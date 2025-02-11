@@ -2,7 +2,8 @@
 % Please edit documentation in R/installConda.R
 \name{installConda}
 \alias{installConda}
-\title{Install (Mini)conda}
+\alias{defaultMiniforgeVersion}
+\title{Install conda}
 \usage{
 installConda(installed = TRUE)
 }
@@ -16,13 +17,13 @@ Nothing is performed if a complete instance already exists at that location.
 A logical scalar is returned indicating whether a new instance was created.
 }
 \description{
-Install conda - specifically Miniconda, though historically we used Anaconda - to an appropriate destination path,
+Install conda - specifically Miniforge's distribution of conda, though historically we used Anaconda - to an appropriate destination path,
 skipping the installation if said path already exists.
 }
 \details{
 This function was originally created from code in \url{https://github.com/hafen/rminiconda},
 also borrowing code from \pkg{reticulate}'s \code{install_miniconda} for correct Windows installation.
-It downloads and runs a Miniconda installer to create a dedicated Conda instance that is managed by \pkg{basilisk},
+It downloads and runs a Miniforge installer to create a dedicated conda instance that is managed by \pkg{basilisk},
 separate from other instances that might be available on the system.
 
 The installer itself is cached to avoid re-downloading it when, e.g., re-installing \pkg{basilisk} across separate R sessions.
@@ -30,9 +31,9 @@ Users can obtain/delete the cached installer by looking at the contents of the p
 This caching behavior is disabled for system installations (see \code{\link{useSystemDir}}), which touch nothing except the system directories;
 in such cases, only repeated installation attempts in the same R session will re-use the same installer.
 
-Currently, we use version 4.12.0 of the Miniconda3 installer, which also comes with Python 3.9.
-Users can change this by setting the \code{BASILISK_MINICONDA_VERSION} environment variable, e.g., to \code{"py38_4.11.0"}.
-Any change should be done with a great deal of caution, typically due to some system-specific problem with a particular Miniconda version.
+The default version of the Miniforge installer is listed in the \code{defaultMiniforgeVersion} constant.
+Users can change this by setting the \code{BASILISK_MINIFORGE_VERSION} environment variable, e.g., to \code{"24.11.3-0"}.
+Any change should be done with some caution, as downstream packages may implicitly rely on the conda version.
 If it must be done, users should try to stick to the same Python version.
 }
 \section{Destruction of old instances}{

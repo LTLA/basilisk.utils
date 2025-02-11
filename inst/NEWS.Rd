@@ -4,6 +4,10 @@
 
 \section{Version 1.20.0}{\itemize{
 \item Detect the \code{BASILISK_EXTERNAL_FALLBACK_R} environment to use an external fallback R environment.
+
+\item Updated to the latest version of the Miniforge installer (24.11.3-0).
+
+\item Expose the default version of the Miniforge installation via the new \code{defaultMiniforgeVersion} constant.
 }}
 
 \section{Version 1.18.0}{\itemize{

@@ -1,6 +1,6 @@
-#' Install (Mini)conda 
+#' Install conda 
 #'
-#' Install conda - specifically Miniconda, though historically we used Anaconda - to an appropriate destination path,
+#' Install conda - specifically Miniforge's distribution of conda, though historically we used Anaconda - to an appropriate destination path,
 #' skipping the installation if said path already exists.
 #'
 #' @param installed Logical scalar indicating whether \pkg{basilisk} is already installed.
@@ -9,7 +9,7 @@
 #' @details
 #' This function was originally created from code in \url{https://github.com/hafen/rminiconda},
 #' also borrowing code from \pkg{reticulate}'s \code{install_miniconda} for correct Windows installation.
-#' It downloads and runs a Miniconda installer to create a dedicated Conda instance that is managed by \pkg{basilisk},
+#' It downloads and runs a Miniforge installer to create a dedicated conda instance that is managed by \pkg{basilisk},
 #' separate from other instances that might be available on the system.
 #'
 #' The installer itself is cached to avoid re-downloading it when, e.g., re-installing \pkg{basilisk} across separate R sessions.
@@ -17,9 +17,9 @@
 #' This caching behavior is disabled for system installations (see \code{\link{useSystemDir}}), which touch nothing except the system directories;
 #' in such cases, only repeated installation attempts in the same R session will re-use the same installer.
 #'
-#' Currently, we use version 4.12.0 of the Miniconda3 installer, which also comes with Python 3.9.
-#' Users can change this by setting the \code{BASILISK_MINICONDA_VERSION} environment variable, e.g., to \code{"py38_4.11.0"}.
-#' Any change should be done with a great deal of caution, typically due to some system-specific problem with a particular Miniconda version.
+#' The default version of the Miniforge installer is listed in the \code{defaultMiniforgeVersion} constant.
+#' Users can change this by setting the \code{BASILISK_MINIFORGE_VERSION} environment variable, e.g., to \code{"24.11.3-0"}.
+#' Any change should be done with some caution, as downstream packages may implicitly rely on the conda version.
 #' If it must be done, users should try to stick to the same Python version.
 #'
 #' @section Destruction of old instances:
@@ -54,6 +54,7 @@
 #'
 #' @export
 #' @importFrom dir.expiry touchDirectory
+#' @aliases defaultMiniforgeVersion
 installConda <- function(installed=TRUE) {
     if (!is.na(.get_external_conda())) {
         return(FALSE)
@@ -106,7 +107,7 @@ installConda <- function(installed=TRUE) {
 
     if (!identical(Sys.getenv("BASILISK_USE_MINIFORGE", NA), "0")) {
         prefix <- "Miniforge3"
-        version <- Sys.getenv("BASILISK_MINIFORGE_VERSION", "24.3.0-0")
+        version <- Sys.getenv("BASILISK_MINIFORGE_VERSION", defaultMiniforgeVersion)
         base_url <- paste0("https://github.com/conda-forge/miniforge/releases/download/", version)
     } else {
         prefix <- "Miniconda3"
@@ -188,6 +189,9 @@ installConda <- function(installed=TRUE) {
     success <- TRUE
     TRUE 
 }
+
+#' @export
+defaultMiniforgeVersion <- "24.11.3-0"
 
 #' @importFrom utils download.file
 #' @importFrom methods is
