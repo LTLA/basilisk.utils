@@ -11,6 +11,12 @@ test_that("BASILISK_EXTERNAL_CONDA works", {
     setVariable("BASILISK_EXTERNAL_CONDA", old)
 })
 
+test_that("BASILISK_EXTERNAL_FALLBACK_R works", {
+    old <- setVariable("BASILISK_EXTERNAL_FALLBACK_R", "blah")
+    expect_identical('blah', getFallbackREnv())
+    setVariable("BASILISK_EXTERNAL_CONDA", old)
+})
+
 test_that("BASILISK_USE_SYSTEM_DIR works", {
     old <- setVariable("BASILISK_USE_SYSTEM_DIR", NA)
     expect_false(useSystemDir())

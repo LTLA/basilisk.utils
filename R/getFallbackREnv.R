@@ -10,6 +10,9 @@
 #' Otherwise, if \code{\link{useSystemDir}} is \code{TRUE}, an error is thrown;
 #' this is because the fallback environment should have been created by \code{\link{installConda}}, unless \code{\link{noFallbackR}} is set to \code{TRUE}.
 #'
+#' If the \code{BASILISK_EXTERNAL_FALLBACK_R} environment variable is set to some location, this will be returned instead.
+#' The fallback environment should have already been created at this location.
+#'
 #' @author Aaron Lun
 #'
 #' @examples
@@ -20,6 +23,11 @@
 #' 
 #' @export
 getFallbackREnv <- function() {
+    path <- Sys.getenv("BASILISK_EXTERNAL_FALLBACK_R", NA)
+    if (!is.na(path)) {
+        return(path)
+    }
+
     condir <- getCondaDir()
     path <- file.path(condir, "envs", "fallback")
 

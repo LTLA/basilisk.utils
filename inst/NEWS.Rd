@@ -2,6 +2,10 @@
 \title{basilisk.utils News}
 \encoding{UTF-8}
 
+\section{Version 1.20.0}{\itemize{
+\item Detect the \code{BASILISK_EXTERNAL_FALLBACK_R} environment to use an external fallback R environment.
+}}
+
 \section{Version 1.18.0}{\itemize{
 \item Switch to the latest Miniforge installer (24.3.0-0) by default.
 This is preconfigured to use the conda-forge channel and avoids issues with the non-FOSS licensing of the Anaconda repositories.

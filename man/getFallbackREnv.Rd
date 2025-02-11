@@ -17,6 +17,9 @@ This is used as a last resort fallback for \pkg{reticulate} when there are share
 If the environment does not yet exist and \code{\link{useSystemDir}} is \code{FALSE}, it is created on the fly.
 Otherwise, if \code{\link{useSystemDir}} is \code{TRUE}, an error is thrown;
 this is because the fallback environment should have been created by \code{\link{installConda}}, unless \code{\link{noFallbackR}} is set to \code{TRUE}.
+
+If the \code{BASILISK_EXTERNAL_FALLBACK_R} environment variable is set to some location, this will be returned instead.
+The fallback environment should have already been created at this location.
 }
 \examples{
 # We can't actually run getFallbackEnv() here, as it 
