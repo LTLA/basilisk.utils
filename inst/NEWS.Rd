@@ -7,6 +7,8 @@
 
 \item Updated to the latest version of the Miniforge installer (24.11.3-0).
 
+\item Updated the version of \pkg{reticulate} in the fallback R environment to 1.40.0.
+
 \item Expose the default version of the Miniforge installation via the new \code{defaultMiniforgeVersion} constant.
 }}
 
