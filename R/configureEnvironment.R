@@ -24,6 +24,9 @@
 #' Details of the environments to be created are taken from the \code{src} file, which should be executable as a standalone R file (i.e., it can be \code{\link{source}}d).
 #' Each conda environment is defined as a list with a name ending in \code{_args}, where the list contains arguments to \code{\link{createEnvironment}}.
 #'
+#' Packages that support system installs should also set \code{StagedInstall: no} in their \code{DESCRIPTION} files.
+#' This ensures that the conda environments are created with the correct hard-coded paths in the package installation directory.
+#'
 #' @author Aaron Lun
 #' @examples
 #' # If we have a package with an 'R/environments.R' file,
@@ -42,7 +45,7 @@ configureEnvironments <- function(src) {
     }
 
     for (args in env.vars) {
-        loc <- .system_install_path(args$pkg, args$name)
+        loc <- .system_install_path(args$pkg, args$name, installed=FALSE)
         dir.create(dirname(loc), recursive=TRUE, showWarnings=FALSE)
         .create_environment(loc, conda=args$conda, packages=args$packages, extra=args$extra)
     }
@@ -65,14 +68,18 @@ configureEnvironments <- function(src) {
     identical(Sys.getenv("BIOCCONDA_USE_SYSTEM_INSTALL", ""), "1")
 }
 
-.system_install_path <- function(package, name) {
+.system_install_path <- function(package, name, installed) {
     candidate <- test.cache$path
-    if (is.null(test.cache$path)) {
+    if (is.null(candidate)) {
+        if (installed) {
+            return(system.file("biocconda", name, package=package, mustWork=TRUE))
+        }
         candidate <- .libPaths()[1]
     }
     file.path(candidate, package, "biocconda", name)
 }
 
+# Provided for ease of testing only.
 test.cache <- new.env()
 test.cache$path <- NULL
 

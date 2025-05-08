@@ -31,6 +31,9 @@ Developers can support system installs by adding \code{configure(.win)} scripts 
 These scripts should call \code{\link{configureEnvironments}} to trigger creation of the conda environments during R package installation.
 Details of the environments to be created are taken from the \code{src} file, which should be executable as a standalone R file (i.e., it can be \code{\link{source}}d).
 Each conda environment is defined as a list with a name ending in \code{_args}, where the list contains arguments to \code{\link{createEnvironment}}.
+
+Packages that support system installs should also set \code{StagedInstall: no} in their \code{DESCRIPTION} files.
+This ensures that the conda environments are created with the correct hard-coded paths in the package installation directory.
 }
 \examples{
 # If we have a package with an 'R/environments.R' file,

@@ -64,7 +64,7 @@ createEnvironment <- function(
     extra=NULL)
 {
     if (.use_system_install()) {
-        return(file.path(.system_install_path(pkg, name)))
+        return(file.path(.system_install_path(pkg, name, installed=TRUE)))
     }
 
     if (is.null(cache.dir)) {

@@ -91,6 +91,8 @@ Also might as well do it for `configure.win`, so that it works on Windows as wel
 ${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe -e "basilisk.utils::configureEnvironments('R/environment.R')"
 ```
 
+Package developers should also set `StagedInstall: no` to ensure that conda environments are created with the correct hard-coded paths within the R package installation directory.
+
 # Setting defaults
 
 Most default behaviors of `r self` are captured in the following functions, which can in turn be controlled by environment variables.
