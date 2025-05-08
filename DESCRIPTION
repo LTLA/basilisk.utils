@@ -1,7 +1,7 @@
 Package: basilisk.utils
-Version: 1.21.0
-Date: 2025-02-11
-Title: Basilisk Installation Utilities
+Version: 1.21.1
+Date: 2025-05-07
+Title: Centralized Conda Installation for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="infinite.monkeys.with.keyboards@gmail.com"))
 Imports: 
@@ -14,17 +14,13 @@ Suggests:
     knitr,
     rmarkdown,
     BiocStyle,
-    testthat,
-    basilisk
+    testthat
 biocViews: Infrastructure
 Description: 
-    Implements utilities for installation of the basilisk package, primarily 
-    for creation of the underlying Conda instance. This allows us to
-    avoid re-writing the same R code in both the configure script (for
-    centrally administered R installations) and in the lazy installation
-    mechanism (for distributed package binaries). It is highly unlikely that developers
-    - or, heaven forbid, end-users! - will need to interact with this package
-    directly; they should be using the basilisk package instead.
+    Provides a centralized conda installation for use by other Bioconductor packages.
+    If conda is not already available on the system, it is downloaded and installed from the Miniforge project; otherwise, no action is performed.
+    Historically, this package was used to provide a Python installation for basilisk, hence the name.
 License: GPL-3
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
+Encoding: UTF-8
