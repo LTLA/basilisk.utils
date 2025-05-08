@@ -1,4 +1,4 @@
-#' Install (Mini)conda 
+#' Install conda 
 #'
 #' Install conda via the Miniforge project to an appropriate destination path,
 #' skipping the installation if said path already exists.
@@ -24,10 +24,7 @@
 #' @author Aaron Lun
 #'
 #' @examples
-#' # We can't actually run installConda() here, as it 
-#' # either relies on basilisk already being installed or
-#' # it has a hard-coded path to the basilisk system dir.
-#' print("dummy test to pass BiocCheck")
+#' download()
 #'
 #' @export
 #' @import dir.expiry 

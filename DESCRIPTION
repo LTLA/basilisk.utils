@@ -10,7 +10,6 @@ Imports:
     tools,
     dir.expiry
 Suggests:
-    reticulate,
     knitr,
     rmarkdown,
     BiocStyle,

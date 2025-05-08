@@ -2,7 +2,7 @@
 % Please edit documentation in R/download.R
 \name{download}
 \alias{download}
-\title{Install (Mini)conda}
+\title{Install conda}
 \usage{
 download(
   download.version = defaultDownloadVersion(),
@@ -19,9 +19,9 @@ download(
 in which case the binaries will be downloaded again.}
 }
 \value{
-A conda instance is created at the location specified by \code{\link{getCondaDir}}.
+A conda instance is created at the cache location. 
 Nothing is performed if a complete instance already exists at that location.
-A logical scalar is returned indicating whether a new instance was created.
+A string is returned containing the path to the conda installation.
 }
 \description{
 Install conda via the Miniforge project to an appropriate destination path,
@@ -30,37 +30,13 @@ skipping the installation if said path already exists.
 \details{
 This function was originally created from code in \url{https://github.com/hafen/rminiconda},
 also borrowing code from \pkg{reticulate}'s \code{install_miniconda} for correct Windows installation.
-It downloads and runs a Miniconda installer to create a dedicated Conda instance that is managed by \pkg{basilisk},
-separate from other instances that might be available on the system.
+It downloads and runs a Miniforge installer to create a Bioconductor-managed Conda instance. 
 
-The installer itself is cached to avoid re-downloading it when, e.g., re-installing \pkg{basilisk} across separate R sessions.
-Users can obtain/delete the cached installer by looking at the contents of the parent directory of \code{\link{getExternalDir}}.
-This caching behavior is disabled for system installations (see \code{\link{useSystemDir}}), which touch nothing except the system directories;
-in such cases, only repeated installation attempts in the same R session will re-use the same installer.
-
-Currently, we use version 4.12.0 of the Miniconda3 installer, which also comes with Python 3.9.
-Users can change this by setting the \code{BASILISK_MINICONDA_VERSION} environment variable, e.g., to \code{"py38_4.11.0"}.
-Any change should be done with a great deal of caution, typically due to some system-specific problem with a particular Miniconda version.
-If it must be done, users should try to stick to the same Python version.
-}
-\section{Destruction of old instances}{
-
-Whenever \code{installConda} is re-run and \code{BASILISK_USE_SYSTEM_DIR} is not set, 
-any old conda instances and their associated \pkg{basilisk} environments are deleted from the external installation directory.
+Whenever \code{download} is re-run, any old conda instances and their associated \pkg{basilisk} environments are deleted from the external installation directory.
 This avoids duplication of large conda instances after their obselescence.
-Client packages are expected to recreate their environments in the latest conda instance.
-
-Users can disable this destruction by setting the \code{BASILISK_NO_DESTROY} environment variable to \code{"1"}.
-This may be necessary on rare occasions when running multiple R instances on the same Bioconductor release.
-Note that setting this variable is not required for R instances using different Bioconductor releases;
-the destruction process is smart enough to only remove conda instances generated from the same release.
 }
-
 \examples{
-# We can't actually run installConda() here, as it 
-# either relies on basilisk already being installed or
-# it has a hard-coded path to the basilisk system dir.
-print("dummy test to pass BiocCheck")
+download()
 
 }
 \author{

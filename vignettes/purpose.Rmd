@@ -1,47 +1,117 @@
 ---
-title: Utilities for _basilisk_ installation
+title: Bioconductor-managed conda installation 
 author: 
 - name: Aaron Lun
   email: infinite.monkeys.with.keyboards@gmail.com
-date: "Revised: March 6, 2020"
+date: "Revised: May 8, 2025"
 output:
   BiocStyle::html_document
 package: basilisk.utils
 vignette: >
-  %\VignetteIndexEntry{_basilisk_ installation utilities}
+  %\VignetteIndexEntry{conda for Bioconductor}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}    
 ---
 
-```{r, echo=FALSE, results="hide"}
-knitr::opts_chunk$set(error=FALSE, warning=FALSE, message=FALSE)
-library(basilisk.utils)
+```{r, echo=FALSE, results="hide", message=FALSE}
+require(knitr)
+opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
+
 library(BiocStyle)
+self <- Biocpkg("basilisk.utils")
 ```
 
-# Who is this package for?
+# Overview
 
-This document and package is strictly for the developers of `r Biocpkg("basilisk")`.
-If you are a developer of a client package, you probably want to read the `r Biocpkg("basilisk")` vignette instead.
-If you are an end-user of some client package, you are better off reading the documentation for that client instead.
+`r self` provides consistent access to [conda](https://anaconda.org/anaconda/conda) via the [Miniforge](https://github.com/conda-forge/miniforge) project for use in other Bioconductor packages.
+The idea is to check if an appropriate version of conda is already available on the host machine, and if not, download and install a local copy of conda managed by `r self`.
+This avoids end-users having to manually install conda via `SystemRequirements: conda`.
+To find the conda binary:
 
-# Why does this package exist?
+```{r}
+basilisk.utils::find()
+```
 
-This package centralizes various R functions that are required for installing `r Biocpkg("basilisk")`.
-By default, these functions are (potentially) called in `basiliskStart()` during client run-time.
-However, under certain conditions, they are called via the `configure` file during `r Biocpkg("basilisk")` installation.
+This will return either a conda command on the `PATH` (if it is of a suitable version) or the cached path to a conda executable after downloading the binaries (otherwise).
+Developers can use pass this to, e.g., `r CRANpkg("reticulate")`'s `conda_install()` function to create a package-specific conda environment.
 
-Ideally, we would put these functions inside `r Biocpkg("basilisk")` for use in all situations.
-However, this is not possible as `configure` runs before installation, i.e., before any functions are actually available!
-The naive option is to simply duplicate the code in both the package and `configure`;
-this is unappealing as it requires us to maintain twice as much code and circumvents `R CMD check`'s code quality checks.
+# For package developers
 
-The `r Biocpkg("basilisk.utils")` package provides R functions that can be called in both `configure` and `basiliskStart()`.
-This allows us to avoid code duplication and enjoy the safety of `R CMD check`.
-The consequence of this approach is that `r Biocpkg("basilisk.utils")` has no direct relevance to other packages or end-users,
-and thus should never be explicitly loaded into a package namespace or R session.
+When writing a Bioconductor package that relies on a conda environment, we create a file that defines all of the environments that we need.
+This is achieved by defining `*_args` variables, each of which is a list of arguments to pass to `createEnvironment()`.
 
-# Session information
+```{r}
+# environments.R 
+
+env1_args <- list(
+    pkg="my_package",
+    name="env1",
+    version="0.1.0", # doesn't have to be the same as the package version.
+    packages="hdf5=1.14.6"
+)
+
+env2_args <- list(
+    pkg="my_package",
+    name="env2",
+    version="0.2.0",
+    packages="pandas" # version pinning is recommended, but not required.
+)
+```
+
+We can now write our package functions that lazily create these environments on demand.
+
+```{r}
+my_custom_function <- function() {
+    path <- do.call(basilisk.utils::createEnvironment, env1_args)
+    file.path(path, "bin", "h5ls")
+}
+```
+
+Once the package is installed, the user's first call to `my_custom_function()` will trigger the creation of the associated environment.
+
+```{r}
+my_custom_function()
+```
+
+We also add a `configure` file to the root of the package directory.
+This will create all environments during R package installation if the `BIOCCONDA_USE_SYSTEM_INSTALL` environment variable is set.
+Administrators can subsequently bypass the lazy instantiation, e.g., for shared R installations on HPCs or within Docker images.
+
+```sh
+#!/bin/sh
+
+${R_HOME}/bin/Rscript -e "basilisk.utils::configureEnvironments('R/environments.R')"
+```
+
+Also might as well do it for `configure.win`, so that it works on Windows as well:
+
+```sh
+#!/bin/sh
+
+${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe -e "basilisk.utils::configureEnvironments('R/environment.R')"
+```
+
+# Setting defaults
+
+Most default behaviors of `r self` are captured in the following functions, which can in turn be controlled by environment variables.
+
+```{r}
+basilisk.utils::defaultCommand()
+basilisk.utils::defaultMinimumVersion()
+basilisk.utils::defaultDownloadVersion()
+basilisk.utils::defaultCacheDirectory()
+```
+
+For example:
+
+```{r}
+Sys.setenv(BIOCCONDA_CONDA_MINIMUM_VERSION="25.3.0")
+basilisk.utils::defaultMinimumVersion()
+```
+
+And, as mentioned previously, the `BIOCCONDA_USE_SYSTEM_INSTALL` environment variable determines whether the environments are created during R package installation.
+
+# Session information {-}
 
 ```{r}
 sessionInfo()

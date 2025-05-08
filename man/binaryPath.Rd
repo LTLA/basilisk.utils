@@ -15,7 +15,7 @@ pythonBinary(loc)
 }
 \value{
 String containing the path to the conda or Python executable inside \code{loc}.
-If \code{loc} is not supplied, the relative path from the root of the environment is returned.
+If \code{loc} is not supplied, the relative path from the root of a conda instance or environment is returned.
 }
 \description{
 Get binary paths

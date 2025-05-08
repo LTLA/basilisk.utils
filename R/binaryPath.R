@@ -3,7 +3,7 @@
 #' @param loc String containing the path to the root of a conda instance or environment.
 #'
 #' @return String containing the path to the conda or Python executable inside \code{loc}.
-#' If \code{loc} is not supplied, the relative path from the root of the environment is returned.
+#' If \code{loc} is not supplied, the relative path from the root of a conda instance or environment is returned.
 #'
 #' @details
 #' This code is largely copied from \pkg{reticulate},

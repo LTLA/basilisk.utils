@@ -51,5 +51,21 @@ defaultMinimumVersion <- function() {
 #' @importFrom tools R_user_dir
 #' @rdname defaults
 defaultCacheDirectory <- function() {
-    Sys.getenv("BIOCCONDA_CONDA_CACHE_DIRECTORY", R_user_dir("biocconda", "cache"))
+    Sys.getenv("BIOCCONDA_CONDA_CACHE_DIRECTORY", .get_default_cache_directory())
 }
+
+.get_default_cache_directory <- function() {
+    if (isWindows()) {
+        # The Windows Miniforge3 installer (at least, as of 24.3.0-0)
+        # doesn't allow paths longer than 46 characters, so just throw it
+        # in the user's home directory and hope for the best.
+        inst_path <- Sys.getenv("userprofile")
+        if (basename(inst_path) == "Documents") {
+            inst_path <- dirname(inst_path)
+        }
+        inst_path <- file.path(inst_path, ".basilisk")
+    } else {
+        inst_path <- R_user_dir("biocconda", "cache")
+    }
+}
+
