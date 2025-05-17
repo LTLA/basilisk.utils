@@ -1,6 +1,6 @@
 Package: basilisk.utils
-Version: 1.21.1
-Date: 2025-05-07
+Version: 1.21.2
+Date: 2025-05-16
 Title: Centralized Conda Installation for Bioconductor Packages
 Authors@R: c(person("Aaron", "Lun", role=c("aut", "cre", "cph"),
         email="infinite.monkeys.with.keyboards@gmail.com"))

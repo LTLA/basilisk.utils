@@ -12,7 +12,9 @@ createEnvironment(
   cache.dir = NULL,
   ignore.cache = FALSE,
   conda = NULL,
-  extra = NULL
+  channels = "conda-forge",
+  override.channels = TRUE,
+  extra = "--quiet"
 )
 }
 \arguments{
@@ -35,8 +37,11 @@ Ignored for system installs.}
 \item{conda}{String containing the path to the conda command or executable.
 If \code{NULL}, a suitable value is obtained from \code{\link{find}}.}
 
-\item{extra}{Character vector of additional arguments to pass to \code{conda create}.
-If \code{NULL}, the following options are automatically added: \code{-c conda-forge}, \code{--override-channels}, \code{--quiet}.}
+\item{channels}{Character vector of channels to use for conda environment creation.}
+
+\item{override.channels}{Logical scalar indicating whether to set the \code{--override-channels} option during conda environment creation.}
+
+\item{extra}{Character vector of additional arguments to pass to \code{conda create}.}
 }
 \value{
 String containing the path to the conda environment.

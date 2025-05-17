@@ -14,8 +14,9 @@
 #' Ignored for system installs.
 #' @param conda String containing the path to the conda command or executable.
 #' If \code{NULL}, a suitable value is obtained from \code{\link{find}}.
+#' @param channels Character vector of channels to use for conda environment creation.
+#' @param override.channels Logical scalar indicating whether to set the \code{--override-channels} option during conda environment creation.
 #' @param extra Character vector of additional arguments to pass to \code{conda create}.
-#' If \code{NULL}, the following options are automatically added: \code{-c conda-forge}, \code{--override-channels}, \code{--quiet}.
 #'
 #' @details
 #' In general, \code{createEnvironment} should be called inside any function of a downstream package that relies on the conda environment.
@@ -61,7 +62,9 @@ createEnvironment <- function(
     cache.dir=NULL, 
     ignore.cache=FALSE,
     conda=NULL,
-    extra=NULL)
+    channels="conda-forge",
+    override.channels=TRUE,
+    extra="--quiet")
 {
     if (.use_system_install()) {
         return(file.path(.system_install_path(pkg, name, installed=TRUE)))
@@ -81,13 +84,13 @@ createEnvironment <- function(
     }
 
     if (!file.exists(env.loc)) {
-        .create_environment(env.loc, conda=conda, packages=packages, extra=extra)
+        .create_environment(env.loc, conda=conda, packages=packages, channels=channels, override.channels=override.channels, extra=extra)
     }
 
     env.loc
 }
 
-.create_environment <- function(env.loc, conda, packages, extra) {
+.create_environment <- function(env.loc, conda, packages, channels, override.channels, extra) {
     success <- FALSE
     on.exit(if (!success) unlink2(env.loc), add=TRUE, after=FALSE)
 
@@ -95,11 +98,15 @@ createEnvironment <- function(
         conda <- find()
     }
 
-    if (is.null(extra)) {
-        extra <- c("-c", "conda-forge", "--override-channels", "--quiet")
+    more.args <- character(0)
+    for (ch in channels) {
+        more.args <- c(more.args, "-c", ch)
+    }
+    if (override.channels) {
+        more.args <- c(more.args, "--override-channels")
     }
 
-    status <- system2(conda, c("create", "--prefix", env.loc, "--yes", packages, extra))
+    status <- system2(conda, c("create", "--prefix", env.loc, "--yes", packages, more.args, extra))
     if (status != 0L) {
         stop(sprintf("failed to create conda environment at '%s' (returned %i)", env.loc, status))
     }

@@ -22,7 +22,8 @@
 #' Developers can support system installs by adding \code{configure(.win)} scripts to the root of their package.
 #' These scripts should call \code{\link{configureEnvironments}} to trigger creation of the conda environments during R package installation.
 #' Details of the environments to be created are taken from the \code{src} file, which should be executable as a standalone R file (i.e., it can be \code{\link{source}}d).
-#' Each conda environment is defined as a list with a name ending in \code{_args}, where the list contains arguments to \code{\link{createEnvironment}}.
+#' Each conda environment is defined as a list with a name ending in \code{_args}, where the list contains at least the mandatory arguments to \code{\link{createEnvironment}}.
+#' (Caching-related arguments are ignored.)
 #'
 #' Packages that support system installs should also set \code{StagedInstall: no} in their \code{DESCRIPTION} files.
 #' This ensures that the conda environments are created with the correct hard-coded paths in the package installation directory.
@@ -44,10 +45,16 @@ configureEnvironments <- function(src) {
         return(invisible(NULL))
     }
 
+    defaults <- formals(createEnvironment)
+    required <- setdiff(names(formals(.create_environment)), "env.loc")
+
     for (args in env.vars) {
         loc <- .system_install_path(args$pkg, args$name, installed=FALSE)
         dir.create(dirname(loc), recursive=TRUE, showWarnings=FALSE)
-        .create_environment(loc, conda=args$conda, packages=args$packages, extra=args$extra)
+        cur.args <- list(env.loc=loc)
+        cur.args <- c(cur.args, args[intersect(required, names(args))])
+        cur.args <- c(cur.args, defaults[setdiff(required, names(args))])
+        do.call(.create_environment, cur.args)
     }
 
     invisible(NULL)
