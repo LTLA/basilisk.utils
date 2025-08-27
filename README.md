@@ -1,10 +1,11 @@
-# Install-time utilities for basilisk
+# Self-managed conda for Bioconductor
 
-This package provides install-time utilities for the [**basilisk**](https://github.com/LTLA/basilisk) package.
-I split these functions into a separate package so that they would be available while **basilisk** is being installed,
-in particular for system installations where **basilisk**'s installation triggers the creation of a central Conda installation.
-If these functions lived inside **basilisk** itself, I wouldn't be able to use them during **basilisk**'s own installation,
-and I didn't want to maintain a shadow codebase inside **basilisk**'s `configure` script;
-hence, a separate package.
+|Environment|Status|
+|---|---|
+|BioC-release|[![Release OK](https://bioconductor.org/shields/build/release/bioc/basilisk.utils.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/basilisk.utils/)|
+|BioC-devel|[![Devel OK](https://bioconductor.org/shields/build/devel/bioc/basilisk.utils.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/basilisk.utils/)|
 
-**basilisk** users and developers should probably look at the [**basilisk**](https://github.com/LTLA/basilisk) homepage, unless you know what you're doing.
+This package provisions and manages a Conda instance (if one is not already available) for use in the Bioconductor ecosystem.
+It also provides utilities for other packages or users to easily create their own Conda environments.
+It was originally intended to support the [**basilisk**](https://github.com/LTLA/basilisk) package,
+but now that **basilisk** no longer relies on Conda, **basilisk.utils** has been repurposed for more general-purpose Conda management.
