@@ -3,7 +3,7 @@ title: Bioconductor-managed conda installation
 author: 
 - name: Aaron Lun
   email: infinite.monkeys.with.keyboards@gmail.com
-date: "Revised: May 8, 2025"
+date: "Revised: November 9, 2025"
 output:
   BiocStyle::html_document
 package: basilisk.utils
@@ -112,6 +112,13 @@ basilisk.utils::defaultMinimumVersion()
 ```
 
 And, as mentioned previously, the `BIOCCONDA_USE_SYSTEM_INSTALL` environment variable determines whether the environments are created during R package installation.
+
+# Historical comments
+
+Historically, `r self` was used to provide install-time functions for `r Biocpkg("basilisk")` when the latter used conda.
+`r Biocpkg("basilisk")` has since switched to a different mechanism for managing Python instances.
+Now, `r self` has nothing to do with `r Biocpkg("basilisk")`;
+the former only holds onto the name for back-compatibility purposes, and because it's too much hassle to rename the package.
 
 # Session information {-}
 
